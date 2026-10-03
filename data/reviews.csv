@@ -1,0 +1,5 @@
+id,customer_name,rating,comment,item_id,date,avatar,approved
+R001,Khách A.,5,"Gà giòn, nóng hổi, giao nhanh.",M001,2026-09-20,,1
+R002,Khách B.,4,Burger ngon nhưng hơi ít sốt.,M005,2026-09-22,,1
+R003,Khách C.,5,Combo gia đình đủ cả nhà ăn no.,M007,2026-09-25,,1
+R004,Khách D.,2,Đánh giá thử nghiệm – không hiển thị,M008,2026-09-26,,0

@@ -1,0 +1,4 @@
+id,title,description,image,original_price,promo_price,code,discount_type,discount_value,min_order,start_date,end_date,active
+P001,Thứ Ba Vui Vẻ,"Mua 1 combo 1 người, tặng 1 gà rán",assets/images/promo/p001.svg,135000,99000,TUESDAY,amount,30000,99000,2026-10-01,2026-12-31,1
+P002,Giảm 20% Đơn Online,Áp dụng cho mọi đơn từ 200.000đ,assets/images/promo/p002.svg,,,ONLINE20,percent,20,200000,2026-10-01,2026-11-30,1
+P003,Combo Gia Đình Siêu Tiết Kiệm,6 gà + 2 khoai lớn + 4 nước,assets/images/promo/p003.svg,349000,289000,,,,0,2026-10-01,2026-10-31,1

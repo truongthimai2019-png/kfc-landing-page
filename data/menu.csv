@@ -1,0 +1,13 @@
+id,name,category,description,price,image,tag,spicy,available
+M001,Gà rán giòn (1 miếng),Gà rán,Gà rán giòn rụm công thức truyền thống,40000,assets/images/menu/m001.svg,Bán chạy,0,1
+M002,Gà rán cay (1 miếng),Gà rán,Lớp vỏ giòn cay nồng,37000,assets/images/menu/m002.svg,,1,1
+M003,Gà không xương (5 miếng),Gà rán,Phi lê gà tẩm bột chấm sốt,49000,assets/images/menu/m003.svg,Mới,0,1
+M004,Burger gà giòn,Burger,"Gà giòn, xà lách, sốt mayo",45000,assets/images/menu/m004.svg,,0,1
+M005,Burger gà cay phô mai,Burger,"Gà cay, phô mai lát, sốt đặc biệt",55000,assets/images/menu/m005.svg,Mới,1,1
+M006,Combo 1 người,Combo,"2 gà rán + 1 khoai + 1 nước",99000,assets/images/menu/m006.svg,Bán chạy,0,1
+M007,Combo gia đình,Combo,"6 gà rán + 2 khoai lớn + 4 nước",289000,assets/images/menu/m007.svg,,0,1
+M008,Khoai tây chiên (vừa),Món phụ,Khoai chiên giòn,25000,assets/images/menu/m008.svg,,0,1
+M009,Salad bắp cải,Món phụ,Bắp cải trộn sốt kem,19000,assets/images/menu/m009.svg,,0,1
+M010,Pepsi (vừa),Đồ uống,Nước ngọt có ga,15000,assets/images/menu/m010.svg,,0,1
+M011,Trà đào,Đồ uống,Trà đào mát lạnh,22000,assets/images/menu/m011.svg,,0,1
+M012,Bánh trứng,Tráng miệng,Bánh tart trứng nướng,18000,assets/images/menu/m012.svg,,0,0

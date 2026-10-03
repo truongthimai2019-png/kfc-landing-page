@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KFC – Gà Rán Ngon Số 1</title>
+  <meta name="description" content="Trang landing page KFC – dự án luyện tập Vibe Coding. Không phải trang chính thức." />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/sections.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo" aria-label="KFC trang chủ">
+        <span class="logo-kfc">KFC</span>
+        <span class="logo-sub">Gà Rán Số 1</span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Điều hướng chính">
+        <ul class="nav-list">
+          <li><a href="#menu" class="nav-link">Thực đơn</a></li>
+          <li><a href="#hero" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="#stores" class="nav-link">Cửa hàng</a></li>
+          <li><a href="#reviews" class="nav-link">Đánh giá</a></li>
+          <li><a href="#order" class="nav-link">Đặt hàng</a></li>
+        </ul>
+      </nav>
+      <a href="#order" class="btn btn-primary header-cta">Đặt ngay</a>
+      <button class="cart-icon" id="cart-icon" aria-label="Giỏ hàng">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Mở menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO / SLIDER KHUYẾN MÃI ===== -->
+  <section id="hero" class="section-hero">
+    <div class="promo-slider" id="promo-slider" aria-label="Khuyến mãi nổi bật">
+      <!-- Được render bởi promo-slider.js -->
+      <div class="slider-loading">Đang tải khuyến mãi…</div>
+    </div>
+    <div class="slider-controls" id="slider-controls" aria-hidden="true">
+      <button class="slider-btn slider-prev" id="slider-prev" aria-label="Slide trước">&#8249;</button>
+      <div class="slider-dots" id="slider-dots"></div>
+      <button class="slider-btn slider-next" id="slider-next" aria-label="Slide tiếp">&#8250;</button>
+    </div>
+  </section>
+
+  <!-- ===== THỰC ĐƠN ===== -->
+  <section id="menu" class="section section-menu">
+    <div class="container">
+      <h2 class="section-title">Thực Đơn</h2>
+      <div class="menu-search-wrap">
+        <input
+          type="search"
+          id="menu-search"
+          class="menu-search"
+          placeholder="Tìm món ăn… (VD: gà, burger)"
+          aria-label="Tìm kiếm món ăn"
+        />
+      </div>
+      <div class="category-tabs" id="category-tabs" role="tablist" aria-label="Lọc theo danh mục">
+        <!-- Được render bởi menu.js -->
+      </div>
+      <div class="menu-grid" id="menu-grid" aria-live="polite">
+        <!-- Được render bởi menu.js -->
+        <p class="loading-text">Đang tải thực đơn…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CỬA HÀNG ===== -->
+  <section id="stores" class="section section-stores section-alt">
+    <div class="container">
+      <h2 class="section-title">Cửa Hàng</h2>
+      <div class="store-filter" id="store-filter">
+        <select id="filter-city" class="store-select" aria-label="Lọc theo tỉnh/thành">
+          <option value="">-- Chọn Tỉnh/Thành --</option>
+        </select>
+        <select id="filter-district" class="store-select" aria-label="Lọc theo quận/huyện">
+          <option value="">-- Chọn Quận/Huyện --</option>
+        </select>
+      </div>
+      <div class="stores-grid" id="stores-grid" aria-live="polite">
+        <p class="loading-text">Đang tải cửa hàng…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ĐÁNH GIÁ ===== -->
+  <section id="reviews" class="section section-reviews">
+    <div class="container">
+      <h2 class="section-title">Đánh Giá Khách Hàng</h2>
+      <div class="reviews-summary" id="reviews-summary">
+        <!-- Được render bởi reviews.js -->
+      </div>
+      <div class="reviews-carousel" id="reviews-carousel" aria-label="Carousel đánh giá">
+        <button class="carousel-btn carousel-prev" id="reviews-prev" aria-label="Đánh giá trước">&#8249;</button>
+        <div class="reviews-track" id="reviews-track">
+          <p class="loading-text">Đang tải đánh giá…</p>
+        </div>
+        <button class="carousel-btn carousel-next" id="reviews-next" aria-label="Đánh giá tiếp">&#8250;</button>
+      </div>
+      <p class="reviews-note">* Dữ liệu minh hoạ cho dự án học tập. Không phải đánh giá thật.</p>
+    </div>
+  </section>
+
+  <!-- ===== ĐẶT HÀNG ===== -->
+  <section id="order" class="section section-order section-alt">
+    <div class="container">
+      <h2 class="section-title">Đặt Món</h2>
+      <div class="order-layout">
+        <!-- Thông tin khách -->
+        <form class="order-form" id="order-form" novalidate>
+          <div class="form-group">
+            <label for="customer-name" class="form-label">Họ tên <span class="required">*</span></label>
+            <input type="text" id="customer-name" class="form-input" placeholder="Nguyễn Văn A" autocomplete="name" />
+            <span class="form-error" id="err-name"></span>
+          </div>
+          <div class="form-group">
+            <label for="customer-phone" class="form-label">Số điện thoại <span class="required">*</span></label>
+            <input type="tel" id="customer-phone" class="form-input" placeholder="0901234567" autocomplete="tel" />
+            <span class="form-error" id="err-phone"></span>
+          </div>
+          <div class="form-group">
+            <label for="customer-address" class="form-label">Địa chỉ giao hàng <span class="required">*</span></label>
+            <input type="text" id="customer-address" class="form-input" placeholder="123 Đường ABC, Phường 1, Quận 1" autocomplete="street-address" />
+            <span class="form-error" id="err-address"></span>
+          </div>
+          <div class="form-group">
+            <label for="order-store" class="form-label">Cửa hàng gần nhất</label>
+            <select id="order-store" class="form-input">
+              <option value="">-- Chọn cửa hàng --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="promo-code" class="form-label">Mã khuyến mãi</label>
+            <div class="promo-input-wrap">
+              <input type="text" id="promo-code" class="form-input" placeholder="Nhập mã giảm giá" />
+              <button type="button" id="apply-promo" class="btn btn-secondary">Áp dụng</button>
+            </div>
+            <span class="form-error" id="err-promo"></span>
+            <span class="form-success" id="ok-promo"></span>
+          </div>
+          <div class="form-group">
+            <label for="order-note" class="form-label">Ghi chú</label>
+            <textarea id="order-note" class="form-input form-textarea" placeholder="Ghi chú thêm (VD: không cay, thêm sốt…)" rows="3"></textarea>
+          </div>
+          <!-- Nút gửi -->
+          <div class="order-actions">
+            <button type="button" id="btn-payment" class="btn btn-primary btn-payment-main">💳 Thanh toán</button>
+            <button type="button" id="btn-send-zalo" class="btn btn-secondary">📱 Gửi Zalo</button>
+            <button type="button" id="btn-send-email" class="btn btn-secondary">✉️ Gửi Email</button>
+            <button type="button" id="btn-download-csv" class="btn btn-secondary">⬇️ Tải đơn (.csv)</button>
+          </div>
+        </form>
+
+        <!-- Giỏ món -->
+        <div class="order-cart" id="order-cart">
+          <h3 class="cart-title">Giỏ món của bạn</h3>
+          <div class="cart-items" id="cart-items">
+            <p class="cart-empty">Chưa có món nào. Hãy chọn từ thực đơn!</p>
+          </div>
+          <div class="cart-summary" id="cart-summary">
+            <div class="cart-row">
+              <span>Tạm tính:</span>
+              <span id="cart-subtotal">0đ</span>
+            </div>
+            <div class="cart-row cart-discount" id="cart-discount-row" style="display:none">
+              <span>Giảm giá:</span>
+              <span id="cart-discount-amount">0đ</span>
+            </div>
+            <div class="cart-row cart-total">
+              <span>Tổng cộng:</span>
+              <span id="cart-total">0đ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer" id="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-col">
+        <div class="logo logo-footer">
+          <span class="logo-kfc">KFC</span>
+          <span class="logo-sub">Gà Rán Số 1</span>
+        </div>
+        <p class="footer-desc">Dự án học tập Vibe Coding – không phải trang chính thức của KFC.</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Liên hệ</h4>
+        <p>📞 <a href="tel:1800000000" class="footer-link">1800 000 000</a></p>
+        <p>✉️ <a href="mailto:example@email.com" class="footer-link">example@email.com</a></p>
+        <p>🕐 Giờ mở cửa: 09:00 – 22:00</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Theo dõi chúng tôi</h4>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook">Facebook</a>
+          <a href="#" class="social-link" aria-label="Instagram">Instagram</a>
+          <a href="#" class="social-link" aria-label="TikTok">TikTok</a>
+          <a href="#" class="social-link" aria-label="YouTube">YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© 2026 KFC Landing Page – Dự án học tập, không dùng cho mục đích thương mại.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== MODAL THANH TOÁN ===== -->
+  <div class="payment-modal-overlay" id="payment-modal" aria-hidden="true" role="dialog" aria-label="Thanh toán">
+    <div class="payment-modal">
+      <div class="payment-modal-header">
+        <h3 class="payment-modal-title">💳 Thanh Toán</h3>
+        <button class="payment-modal-close" id="payment-modal-close" aria-label="Đóng">✕</button>
+      </div>
+      <div class="payment-tabs" role="tablist">
+        <button class="payment-tab active" data-method="momo" role="tab" aria-selected="true">
+          <span class="payment-tab-icon momo-tab-icon">M</span>
+          QR MoMo
+        </button>
+        <button class="payment-tab" data-method="atm" role="tab" aria-selected="false">
+          🏦 Chuyển khoản ATM
+        </button>
+      </div>
+      <div class="payment-content" id="payment-content">
+        <!-- Được render bởi payment.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast thông báo -->
+  <div class="toast-container" id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- JS (ES Module) -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

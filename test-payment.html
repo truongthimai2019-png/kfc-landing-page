@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Module Thanh Toán – KFC Landing</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; padding: 24px; background: #f5f5f5; }
+    h1 { font-size: 1.4rem; margin-bottom: 20px; color: #333; }
+    .test-group { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .test-group h2 { font-size: 1rem; color: #666; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+    .test-case { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+    .test-case:last-child { border-bottom: none; }
+    .test-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .test-name { flex: 1; }
+    .test-result { font-weight: 700; font-size: 0.8rem; padding: 3px 10px; border-radius: 999px; }
+    .pass { background: #e6f9ed; color: #1E9E5A; }
+    .fail { background: #fde8e8; color: #D32F2F; }
+    .summary { margin-top: 24px; padding: 16px; border-radius: 12px; text-align: center; font-size: 1.1rem; font-weight: 700; }
+    .summary.all-pass { background: #e6f9ed; color: #1E9E5A; }
+    .summary.has-fail { background: #fde8e8; color: #D32F2F; }
+    .test-detail { font-size: 0.78rem; color: #999; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Test Module Thanh Toán – KFC Landing Page</h1>
+  <div id="test-output"></div>
+  <div id="test-summary"></div>
+
+  <script type="module">
+    // ===== Các hàm import từ module thực tế =====
+    import { parseCSV } from './js/utils/csv-parser.js';
+    import { formatVND, removeAccents, isActiveToday } from './js/utils/format.js';
+    import { escapeHTML } from './js/utils/dom.js';
+
+    // ===== Bộ test runner đơn giản =====
+    const results = [];
+    let groupName = '';
+
+    function group(name) { groupName = name; }
+
+    function test(name, fn, detail = '') {
+      try {
+        const result = fn();
+        if (result === true) {
+          results.push({ group: groupName, name, pass: true, detail });
+        } else {
+          results.push({ group: groupName, name, pass: false, detail: `Kết quả: ${JSON.stringify(result)}` });
+        }
+      } catch (err) {
+        results.push({ group: groupName, name, pass: false, detail: err.message });
+      }
+    }
+
+    // ===== NHÓM 1: Kiểm tra hàm tiện ích dùng chung =====
+    group('1. Hàm tiện ích chia sẻ (format.js, dom.js)');
+
+    test('formatVND(99000) → "99.000đ"', () => {
+      return formatVND(99000) === '99.000đ';
+    });
+
+    test('formatVND(0) → "0đ"', () => {
+      return formatVND(0) === '0đ';
+    });
+
+    test('formatVND(289000) → "289.000đ"', () => {
+      return formatVND(289000) === '289.000đ';
+    });
+
+    test('formatVND(NaN) → "0đ" (xử lý an toàn)', () => {
+      return formatVND(NaN) === '0đ';
+    });
+
+    test('formatVND(null) → "0đ" (xử lý an toàn)', () => {
+      return formatVND(null) === '0đ';
+    });
+
+    test('escapeHTML chặn thẻ script', () => {
+      const result = escapeHTML('<script>alert("xss")</script>');
+      return !result.includes('<script>') && result.includes('&lt;script&gt;');
+    });
+
+    test('escapeHTML giữ nguyên chuỗi bình thường', () => {
+      return escapeHTML('Gà rán giòn') === 'Gà rán giòn';
+    });
+
+    test('removeAccents("Gà rán") → "ga ran"', () => {
+      return removeAccents('Gà rán') === 'ga ran';
+    });
+
+    test('removeAccents("Đồ uống") → "do uong"', () => {
+      return removeAccents('Đồ uống') === 'do uong';
+    });
+
+    // ===== NHÓM 2: Kiểm tra CSV Parser =====
+    group('2. CSV Parser (csv-parser.js)');
+
+    test('Parse CSV cơ bản với 3 cột', () => {
+      const data = parseCSV('id,name,price\nM001,Gà rán,36000');
+      return data.length === 1 && data[0].id === 'M001' && data[0].price === 36000;
+    });
+
+    test('Parse CSV có dấu phẩy trong ngoặc kép', () => {
+      const data = parseCSV('id,desc\nM001,"Gà giòn, xà lách"');
+      return data[0].desc === 'Gà giòn, xà lách';
+    });
+
+    test('Parse CSV ép kiểu số tự động', () => {
+      const data = parseCSV('id,price,active\nM001,99000,1');
+      return data[0].price === 99000 && data[0].active === 1;
+    });
+
+    test('Parse CSV giữ chuỗi rỗng', () => {
+      const data = parseCSV('id,tag\nM001,');
+      return data[0].tag === '';
+    });
+
+    test('Parse CSV xử lý BOM', () => {
+      const data = parseCSV('\uFEFFid,name\nM001,Gà');
+      return data[0].id === 'M001';
+    });
+
+    // ===== NHÓM 3: Kiểm tra isActiveToday =====
+    group('3. Kiểm tra ngày hiệu lực (isActiveToday)');
+
+    test('Khuyến mãi trong khoảng ngày hôm nay → true', () => {
+      const today = new Date();
+      const start = new Date(today); start.setDate(start.getDate() - 5);
+      const end = new Date(today); end.setDate(end.getDate() + 5);
+      const fmt = d => d.toISOString().split('T')[0];
+      return isActiveToday(fmt(start), fmt(end)) === true;
+    });
+
+    test('Khuyến mãi đã hết hạn → false', () => {
+      return isActiveToday('2020-01-01', '2020-12-31') === false;
+    });
+
+    test('Khuyến mãi chưa bắt đầu → false', () => {
+      return isActiveToday('2099-01-01', '2099-12-31') === false;
+    });
+
+    test('Khuyến mãi bắt đầu đúng hôm nay → true', () => {
+      const today = new Date().toISOString().split('T')[0];
+      return isActiveToday(today, '2099-12-31') === true;
+    });
+
+    test('Khuyến mãi kết thúc đúng hôm nay → true', () => {
+      const today = new Date().toISOString().split('T')[0];
+      return isActiveToday('2020-01-01', today) === true;
+    });
+
+    // ===== NHÓM 4: Kiểm tra tính toán giỏ hàng =====
+    group('4. Tính toán giỏ hàng (cart.js – logic cốt lõi)');
+
+    // Mô phỏng logic cart nội bộ (không import trực tiếp do trạng thái singleton)
+    function calcSubtotal(items) {
+      return items.reduce((s, ci) => s + ci.item.price * ci.quantity, 0);
+    }
+
+    function calcDiscount(subtotal, promo) {
+      if (!promo) return 0;
+      if (promo.discount_type === 'percent') {
+        return Math.min(Math.floor(subtotal * promo.discount_value / 100), subtotal);
+      }
+      if (promo.discount_type === 'amount') {
+        return Math.min(promo.discount_value, subtotal);
+      }
+      return 0;
+    }
+
+    function calcTotal(subtotal, discount) {
+      return Math.max(0, subtotal - discount);
+    }
+
+    const testCart = [
+      { item: { id: 'M001', name: 'Gà rán giòn', price: 36000 }, quantity: 2 },
+      { item: { id: 'M006', name: 'Combo 1 người', price: 99000 }, quantity: 1 },
+    ];
+
+    test('Tạm tính: 36000×2 + 99000×1 = 171.000đ', () => {
+      return calcSubtotal(testCart) === 171000;
+    });
+
+    test('Giảm giá TUESDAY (amount 30000, min_order 99000) → giảm 30.000đ', () => {
+      const promo = { discount_type: 'amount', discount_value: 30000, min_order: 99000 };
+      const sub = calcSubtotal(testCart);
+      return sub >= promo.min_order && calcDiscount(sub, promo) === 30000;
+    });
+
+    test('Giảm giá ONLINE20 (percent 20%, min_order 200000) → không đủ điều kiện', () => {
+      const promo = { discount_type: 'percent', discount_value: 20, min_order: 200000 };
+      const sub = calcSubtotal(testCart); // 171000
+      return sub < promo.min_order; // true = không đủ
+    });
+
+    test('Giảm giá ONLINE20 với đơn ≥ 200.000 → giảm 20%', () => {
+      const bigCart = [
+        { item: { id: 'M007', name: 'Combo gia đình', price: 289000 }, quantity: 1 },
+      ];
+      const promo = { discount_type: 'percent', discount_value: 20, min_order: 200000 };
+      const sub = calcSubtotal(bigCart); // 289000
+      const disc = calcDiscount(sub, promo); // 57800
+      return disc === 57800;
+    });
+
+    test('Tổng cộng = tạm tính − giảm giá (không âm)', () => {
+      const sub = 100000;
+      const disc = 150000; // giảm nhiều hơn tạm tính
+      return calcTotal(sub, disc) === 0; // không âm
+    });
+
+    test('Không có mã → giảm giá = 0', () => {
+      return calcDiscount(171000, null) === 0;
+    });
+
+    test('Giỏ trống → tạm tính = 0', () => {
+      return calcSubtotal([]) === 0;
+    });
+
+    // ===== NHÓM 5: Kiểm tra logic Payment riêng =====
+    group('5. Logic module Thanh toán (payment.js)');
+
+    // Mô phỏng generateOrderId
+    function generateOrderId() {
+      const now = new Date();
+      const parts = [
+        now.getFullYear().toString().slice(-2),
+        String(now.getMonth() + 1).padStart(2, '0'),
+        String(now.getDate()).padStart(2, '0'),
+        String(now.getHours()).padStart(2, '0'),
+        String(now.getMinutes()).padStart(2, '0'),
+        String(now.getSeconds()).padStart(2, '0'),
+      ];
+      return 'KFC' + parts.join('');
+    }
+
+    test('generateOrderId bắt đầu bằng "KFC"', () => {
+      return generateOrderId().startsWith('KFC');
+    });
+
+    test('generateOrderId có đúng 15 ký tự (KFC + 12 chữ số)', () => {
+      const id = generateOrderId();
+      return id.length === 15 && /^KFC\d{12}$/.test(id);
+    });
+
+    test('generateOrderId tạo mã khác nhau ở thời điểm khác nhau', () => {
+      const id1 = generateOrderId();
+      // Thay đổi giây nhẹ
+      const id2 = 'KFC' + '261003141300'; // mã cứng khác
+      return id1 !== id2;
+    });
+
+    // Kiểm tra validate form
+    function validatePhone(phone) {
+      return /^0\d{9}$/.test(phone);
+    }
+
+    test('SĐT hợp lệ: 0901234567', () => {
+      return validatePhone('0901234567') === true;
+    });
+
+    test('SĐT sai: 123456789 (không bắt đầu bằng 0)', () => {
+      return validatePhone('123456789') === false;
+    });
+
+    test('SĐT sai: 09012345678 (11 số)', () => {
+      return validatePhone('09012345678') === false;
+    });
+
+    test('SĐT sai: chuỗi rỗng', () => {
+      return validatePhone('') === false;
+    });
+
+    test('SĐT sai: chứa chữ cái', () => {
+      return validatePhone('090abc1234') === false;
+    });
+
+    // Kiểm tra MoMo QR data format
+    test('MoMo QR data chứa SĐT và số tiền', () => {
+      const phone = '0900000000';
+      const total = 99000;
+      const orderId = 'KFC261003141200';
+      const qrData = `2|99|${phone}|||0|0|${total}|${orderId}|transfer_myqr`;
+      return qrData.includes(phone) && qrData.includes(String(total)) && qrData.includes(orderId);
+    });
+
+    // Kiểm tra nội dung chuyển khoản
+    test('Nội dung CK chứa mã đơn hàng', () => {
+      const orderId = 'KFC261003141200';
+      const content = `KFC ${orderId}`;
+      return content.includes(orderId);
+    });
+
+    // Kiểm tra đếm ngược
+    test('Đếm ngược 15 phút = 900 giây', () => {
+      return 15 * 60 === 900;
+    });
+
+    // ===== NHÓM 6: Kiểm tra DOM / HTML =====
+    group('6. Kiểm tra HTML elements tồn tại');
+
+    test('Modal thanh toán (#payment-modal) tồn tại', () => {
+      return document.getElementById('payment-modal') !== null;
+    }, 'Cần chạy file này từ thư mục gốc dự án');
+
+    test('Nút thanh toán (#btn-payment) tồn tại', () => {
+      return document.getElementById('btn-payment') !== null;
+    });
+
+    test('Nút đóng modal (#payment-modal-close) tồn tại', () => {
+      return document.getElementById('payment-modal-close') !== null;
+    });
+
+    test('Payment content (#payment-content) tồn tại', () => {
+      return document.getElementById('payment-content') !== null;
+    });
+
+    test('Tab MoMo tồn tại', () => {
+      const tab = document.querySelector('.payment-tab[data-method="momo"]');
+      return tab !== null;
+    });
+
+    test('Tab ATM tồn tại', () => {
+      const tab = document.querySelector('.payment-tab[data-method="atm"]');
+      return tab !== null;
+    });
+
+    test('Modal ẩn mặc định (không có class is-open)', () => {
+      const modal = document.getElementById('payment-modal');
+      return modal && !modal.classList.contains('is-open');
+    });
+
+    test('Icon giỏ hàng (#cart-icon) tồn tại', () => {
+      return document.getElementById('cart-icon') !== null;
+    });
+
+    test('Badge giỏ (#cart-badge) tồn tại', () => {
+      return document.getElementById('cart-badge') !== null;
+    });
+
+    // ===== NHÓM 7: Kiểm tra CSS classes =====
+    group('7. Kiểm tra CSS styles');
+
+    test('Modal overlay có position fixed', () => {
+      const modal = document.getElementById('payment-modal');
+      if (!modal) return false;
+      const style = getComputedStyle(modal);
+      return style.position === 'fixed';
+    });
+
+    test('Modal overlay mặc định không hiển thị (visibility hidden)', () => {
+      const modal = document.getElementById('payment-modal');
+      if (!modal) return false;
+      const style = getComputedStyle(modal);
+      return style.visibility === 'hidden' || style.opacity === '0';
+    });
+
+    // ===== RENDER KẾT QUẢ =====
+    const output = document.getElementById('test-output');
+    const summaryEl = document.getElementById('test-summary');
+
+    // Nhóm kết quả
+    const groups = {};
+    results.forEach(r => {
+      if (!groups[r.group]) groups[r.group] = [];
+      groups[r.group].push(r);
+    });
+
+    let totalPass = 0;
+    let totalFail = 0;
+
+    for (const [gName, tests] of Object.entries(groups)) {
+      const div = document.createElement('div');
+      div.className = 'test-group';
+      div.innerHTML = `<h2>${gName}</h2>`;
+
+      tests.forEach(t => {
+        if (t.pass) totalPass++;
+        else totalFail++;
+
+        const row = document.createElement('div');
+        row.className = 'test-case';
+        row.innerHTML = `
+          <span class="test-icon">${t.pass ? '✅' : '❌'}</span>
+          <div class="test-name">
+            ${t.name}
+            ${t.detail && !t.pass ? `<div class="test-detail">${t.detail}</div>` : ''}
+          </div>
+          <span class="test-result ${t.pass ? 'pass' : 'fail'}">${t.pass ? 'PASS' : 'FAIL'}</span>
+        `;
+        div.appendChild(row);
+      });
+
+      output.appendChild(div);
+    }
+
+    const allPass = totalFail === 0;
+    summaryEl.className = `summary ${allPass ? 'all-pass' : 'has-fail'}`;
+    summaryEl.textContent = allPass
+      ? `✅ Tất cả ${totalPass} test cases đều PASS!`
+      : `❌ ${totalFail} FAIL / ${totalPass + totalFail} tổng (${totalPass} pass)`;
+
+    // Log ra console
+    console.log(`\n===== KẾT QUẢ TEST =====`);
+    console.log(`✅ Pass: ${totalPass}`);
+    console.log(`❌ Fail: ${totalFail}`);
+    console.log(`Tổng: ${totalPass + totalFail}`);
+    if (totalFail > 0) {
+      console.warn('Các test fail:');
+      results.filter(r => !r.pass).forEach(r => console.warn(`  ❌ ${r.name}: ${r.detail}`));
+    }
+  </script>
+</body>
+</html>

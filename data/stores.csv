@@ -1,0 +1,4 @@
+id,name,address,district,city,phone,open_time,close_time,lat,lng
+S001,Cửa hàng Mẫu 1,"123 Đường Mẫu, Phường 1",Quận 1,TP. Hồ Chí Minh,0900000001,09:00,22:00,10.7769,106.7009
+S002,Cửa hàng Mẫu 2,"45 Đường Mẫu, Phường 2",Quận 3,TP. Hồ Chí Minh,0900000002,09:00,22:00,10.7843,106.6844
+S003,Cửa hàng Mẫu 3,78 Đường Mẫu,TP. Tây Ninh,Tây Ninh,0900000003,08:30,21:30,11.3101,106.0983
