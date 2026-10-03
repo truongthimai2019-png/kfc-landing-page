@@ -2,8 +2,9 @@
  * promo-slider.js – Slider khuyến mãi + đồng hồ đếm ngược
  */
 
-import { escapeHTML, showSectionError } from '../utils/dom.js';
+import { escapeHTML, showSectionError, showToast } from '../utils/dom.js';
 import { formatVND, isActiveToday, secondsUntilEnd } from '../utils/format.js';
+import { addToCart } from './cart.js';
 
 let slides = [];        // Danh sách khuyến mãi còn hiệu lực
 let currentIndex = 0;   // Slide đang hiển thị
@@ -80,7 +81,7 @@ function renderSlides(container) {
       ${pricesHTML ? `<div class="slide-prices">${pricesHTML}</div>` : ''}
       ${codeHTML}
       <div class="countdown" id="countdown-${i}"></div>
-      <a href="#order" class="btn btn-primary">Đặt ngay</a>
+      <button type="button" class="btn btn-primary btn-promo-order" data-index="${i}">Đặt ngay</button>
     `;
 
     slide.appendChild(imgWrap);
@@ -91,6 +92,32 @@ function renderSlides(container) {
   container.innerHTML = '';
   container.appendChild(track);
   updateCountdown(0);
+
+  // Nút "Đặt ngay": thêm khuyến mãi vào giỏ (nếu có giá cụ thể) rồi cuộn xuống form
+  container.querySelectorAll('.btn-promo-order').forEach(btn => {
+    btn.addEventListener('click', () => handlePromoOrder(slides[Number(btn.dataset.index)]));
+  });
+}
+
+/** Xử lý khi bấm "Đặt ngay" trên một slide khuyến mãi */
+function handlePromoOrder(promo) {
+  // Khuyến mãi có giá cụ thể (combo, ưu đãi theo món) → thêm luôn vào giỏ
+  if (promo.promo_price) {
+    addToCart({
+      id: `PROMO-${promo.id}`,
+      name: promo.title,
+      price: promo.promo_price,
+    });
+    showToast(`Đã thêm "${promo.title}" vào giỏ`, 'success');
+  }
+
+  // Khuyến mãi có mã giảm giá → tự điền mã vào form để khách áp dụng
+  if (promo.code) {
+    const promoInput = document.getElementById('promo-code');
+    if (promoInput) promoInput.value = promo.code;
+  }
+
+  document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
 }
 
 /** Vẽ chấm chỉ vị trí slide */
